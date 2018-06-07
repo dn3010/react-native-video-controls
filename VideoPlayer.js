@@ -885,11 +885,13 @@ export default class VideoPlayer extends Component {
      * Back button control
      */
     renderBack() {
-			let iconToUse = Platform.OS === 'ios' ? './assets/img/back.png'
-			: './assets/img/back-android.png'
+			const iosIcon = require( './assets/img/back.png' )
+			const androidIcon = require( './assets/img/back-android.png' )
+			let iconToUse = Platform.OS === 'ios' ? iosIcon
+			: androidIcon
         return this.renderControl(
             <Image
-                source={ require( iconToUse ) }
+                source={ iconToUse }
                 style={ styles.controls.back }
             />,
             this.events.onBack,
