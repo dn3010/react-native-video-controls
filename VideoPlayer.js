@@ -29,7 +29,8 @@ export default class VideoPlayer extends Component {
         volume:                         1,
         muted:                          false,
         title:                          '',
-        rate:                           1,
+				rate:                           1,
+				noAnimation:										false
     };
 
     constructor( props ) {
@@ -40,7 +41,8 @@ export default class VideoPlayer extends Component {
          * methods and listeners in this class
          */
         this.state = {
-            // Video
+						// Video
+						noAnimation: this.props.noAnimation,
             resizeMode: this.props.resizeMode,
             paused: this.props.paused,
             muted: this.props.muted,
@@ -83,7 +85,7 @@ export default class VideoPlayer extends Component {
             onError: this.props.onError || this._onError.bind( this ),
             onBack: this.props.onBack || this._onBack.bind( this ),
             onEnd: this.props.onEnd || this._onEnd.bind( this ),
-            onScreenTouch: this._onScreenTouch.bind( this ),
+            onScreenTouch: this.props.onScreenTouch || this._onScreenTouch.bind( this ),
             onEnterFullscreen: this.props.onEnterFullscreen,
             onExitFullscreen: this.props.onExitFullscreen,
             onLoadStart: this._onLoadStart.bind( this ),
@@ -318,7 +320,7 @@ export default class VideoPlayer extends Component {
             ),
             Animated.timing(
                 this.animations.topControl.marginTop,
-                { toValue: -100 }
+                { toValue: -50 }
             ),
             Animated.timing(
                 this.animations.bottomControl.opacity,
@@ -326,7 +328,7 @@ export default class VideoPlayer extends Component {
             ),
             Animated.timing(
                 this.animations.bottomControl.marginBottom,
-                { toValue: -100 }
+                { toValue: -50 }
             ),
         ]).start();
     }
@@ -883,10 +885,11 @@ export default class VideoPlayer extends Component {
      * Back button control
      */
     renderBack() {
-
+			let iconToUse = Platform.OS === 'ios' ? './assets/img/back.png'
+			: './assets/img/back-android.png'
         return this.renderControl(
             <Image
-                source={ require( './assets/img/back.png' ) }
+                source={ require( iconToUse ) }
                 style={ styles.controls.back }
             />,
             this.events.onBack,
@@ -1272,7 +1275,10 @@ const styles = {
             color: '#FFF',
             fontSize: 11,
             textAlign: 'right',
-        },
+				},
+				back: {
+					tintColor: '#FFF'
+				}
     }),
     volume: StyleSheet.create({
         container: {
