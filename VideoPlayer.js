@@ -892,7 +892,7 @@ export default class VideoPlayer extends Component {
         return this.renderControl(
             <Image
                 source={ iconToUse }
-                style={ styles.controls.back }
+                style={ [styles.controls.back, {tintColor: '#FFF'}] }
             />,
             this.events.onBack,
             styles.controls.back
@@ -1278,9 +1278,6 @@ const styles = {
             fontSize: 11,
             textAlign: 'right',
 				},
-				back: {
-					tintColor: '#FFF'
-				}
     }),
     volume: StyleSheet.create({
         container: {
