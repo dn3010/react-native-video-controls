@@ -320,7 +320,7 @@ export default class VideoPlayer extends Component {
             ),
             Animated.timing(
                 this.animations.topControl.marginTop,
-                { toValue: -50 }
+                { toValue: -30 }
             ),
             Animated.timing(
                 this.animations.bottomControl.opacity,
@@ -328,7 +328,7 @@ export default class VideoPlayer extends Component {
             ),
             Animated.timing(
                 this.animations.bottomControl.marginBottom,
-                { toValue: -50 }
+                { toValue: -30 }
             ),
         ]).start();
     }
@@ -852,7 +852,7 @@ export default class VideoPlayer extends Component {
      * view and spaces them out.
      */
     renderTopControls() {
-
+				const { meta } = this.props;
         const backControl = this.props.disableBack ? this.renderNullControl() : this.renderBack();
         const volumeControl = this.props.disableVolume ? this.renderNullControl() : this.renderVolume();
         const fullscreenControl = this.props.disableFullscreen ? this.renderNullControl() : this.renderFullscreen();
@@ -870,7 +870,8 @@ export default class VideoPlayer extends Component {
                     style={[ styles.controls.column ]}
                     imageStyle={[ styles.controls.vignette ]}>
                     <View style={ styles.controls.topControlGroup }>
-                        { backControl }
+												{ backControl }
+												{meta && this.renderMeta()}
                         <View style={ styles.controls.pullRight }>
                             { volumeControl }
                             { fullscreenControl }
@@ -879,6 +880,24 @@ export default class VideoPlayer extends Component {
                 </ImageBackground>
             </Animated.View>
         );
+		}
+		
+		/**
+		 * Render Meta information
+		 */
+		renderMeta() {
+			const { meta, metaStyle = null } = this.props;
+			const {
+				title,
+				subtitle
+			} = meta;
+
+        return (
+					<View style={styles.controls.metaContainer}>
+						<Text style={[styles.controls.metaTitle, metaStyle]}>{title}</Text>
+						<Text style={[styles.controls.metaSubtitle, metaStyle]}>{subtitle}</Text>
+					</View>
+				);
     }
 
     /**
@@ -892,7 +911,8 @@ export default class VideoPlayer extends Component {
         return this.renderControl(
             <Image
                 source={ iconToUse }
-                style={ [styles.controls.back, {tintColor: '#FFF'}] }
+                style={ [styles.controls.back, {tintColor: '#FFF', width: 14, height: 22} ] }
+                resizeMode={'cover'}
             />,
             this.events.onBack,
             styles.controls.back
@@ -934,7 +954,7 @@ export default class VideoPlayer extends Component {
 
         let source = this.state.isFullscreen === true ? require( './assets/img/shrink.png' ) : require( './assets/img/expand.png' );
         return this.renderControl(
-            <Image source={ source } />,
+            <Image source={ source } style={[{tintColor: '#FFF', width: 22, height: 22} ]} />,
             this.methods.toggleFullscreen,
             styles.controls.fullscreen
         );
@@ -1238,8 +1258,9 @@ const styles = {
             justifyContent: 'space-between',
             flexDirection: 'row',
             width: null,
-            margin: 12,
-            marginBottom: 18,
+            margin: 18,
+						marginBottom: 18,
+						paddingTop: 13
         },
         bottomControlGroup: {
             alignSelf: 'stretch',
@@ -1277,7 +1298,25 @@ const styles = {
             color: '#FFF',
             fontSize: 11,
             textAlign: 'right',
-				},
+                },
+        metaContainer: {
+            flex: 1,
+            alignItems: 'flex-start',
+            paddingLeft: 20
+        },
+        metaTitle: {
+            backgroundColor: 'transparent',
+            color: '#FFF',
+            fontSize: 16
+        },
+        metaSubtitle: {
+            backgroundColor: 'transparent',
+            color: '#FFF',
+            fontSize: 12
+        },
+        back: {
+            marginLeft: -5
+        }
     }),
     volume: StyleSheet.create({
         container: {
